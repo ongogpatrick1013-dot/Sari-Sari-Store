@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>🛒 SARI-SARI STORE NI ANALYN ONGOG VELA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ================= GLOBAL RESETS ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+        }
+
+        /* ================= BASE STYLES ================= */
+        body {
+            background: url('https://cdn.pixabay.com/photo/2017/08/07/15/29/store-2606728_1280.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 80px; /* Space for footer */
+        }
+
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 248, 230, 0.9);
+            z-index: -1;
+        }
+
+        /* ================= PAGE CONTAINERS ================= */
+        .page-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            display: none;
+        }
+
+        .active-page {
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================= HEADER STYLES ================= */
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px 0;
+            background: rgba(255, 153, 0, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .page-header h1 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 3px rgba(0,0,0,0.2);
+        }
+
+        .page-header p {
+            color: #fff3e0;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* ================= FORM STYLES ================= */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: #5d4037;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ffcc80;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: #ff9800;
+            box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff9800, #ff5722);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #5d4037;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            width: auto;
+            margin: 0 5px;
+        }
+
+        .btn-edit {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .page-switch-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #5d4037;
+            font-size: 0.95rem;
+        }
+
+        .page-switch-link a {
+            color: #ff5722;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* ================= DASHBOARD STYLES ================= */
+        .dashboard-content {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .dashboard-title {
+            color: #ff5722;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffcc80;
+        }
+
+        .inventory-form {
+            display: grid;
+            gap: 18px;
+        }
+
+        .category-select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ffcc80;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: white;
+            outline: none;
+            color: #5d4037;
+        }
+
+        .save-status {
+            text-align: center;
+            color: #4caf50;
+            font-weight: bold;
+            margin-top: 10px;
+            display: none;
+            animation: fadeInOut 2s ease forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* ================= SEARCH SECTION ================= */
+        .search-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ffcc80;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            width: 50px;
+            padding: 0;
+            background: #ff9800;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* ================= HISTORY TABLE ================= */
+        .history-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            background: #ffcc80;
+            color: #5d4037;
+            padding: 12px;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        .history-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.85rem;
+            color: #333;
+            vertical-align: middle;
+        }
+
+        .history-table tr:nth-child(even) {
+            background: #fff8e1;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        /* ================= EDIT MODAL ================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .modal-title {
+            color: #ff5722;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        /* ================= EXPORT/IMPORT SECTION ================= */
+        .data-tools {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .import-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .import-btn input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* ================= FOOTER ================= */
+        .app-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 153, 0, 0.95);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9rem;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* ================= ERROR/ALERT MESSAGES ================= */
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #b71c1c;
+            border: 1px solid #ef9a9a;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay"></div>
+
+    <!-- CREATE ACCOUNT PAGE -->
+    <div class="page-container" id="createAccountPage">
+        <div class="page-header">
+            <h1>🛒 ANALYN'S SARI-SARI STORE</h1>
+            <p>Create Your Account</p>
+        </div>
+
+        <div class="alert alert-error" id="createErrorAlert">❌ Please fill all fields correctly!</div>
+        <div class="alert alert-success" id="createSuccessAlert">✅ Account created successfully! Please login.</div>
+
+        <div class="form-group">
+            <label class="form-label" for="newName">Full Name</label>
+            <input type="text" id="newName" class="form-input" placeholder="Enter your full name">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="newUsername">Username</label>
+            <input type="text" id="newUsername" class="form-input" placeholder="Create a username">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="newPassword">Password</label>
+            <input type="password" id="newPassword" class="form-input" placeholder="Create a password">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" class="form-input" placeholder="Re-enter password">
+        </div>
+
+        <button class="btn btn-primary" onclick="createAccount()">📝 CREATE ACCOUNT</button>
+
+        <div class="page-switch-link">
+            Already have an account? <a href="#" onclick="switchPage('loginPage')">Login here</a>
+        </div>
+    </div>
+
+    <!-- LOGIN PAGE -->
+    <div class="page-container" id="loginPage">
+        <div class="page-header">
+            <h1>🛒 ANALYN'S SARI-SARI STORE</h1>
+            <p>Login to Your Account</p>
+        </div>
+
+        <div class="alert alert-error" id="loginErrorAlert">❌ Invalid username or password!</div>
+
+        <div class="form-group">
+            <label class="form-label" for="loginUsername">Username</label>
+            <input type="text" id="loginUsername" class="form-input" placeholder="Enter your username">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password">
+        </div>
+
+        <button class="btn btn-primary" onclick="loginUser()">🔐 LOGIN</button>
+
+        <div class="page-switch-link">
+            Don't have an account? <a href="#" onclick="switchPage('createAccountPage')">Create one here</a>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page-container" id="dashboardPage">
+        <div class="page-header">
+            <h1>🛒 ANALYN'S SARI-SARI STORE</h1>
+            <p>Inventory Management Dashboard</p>
+        </div>
+
+        <!-- ADD NEW ITEM SECTION -->
+        <div class="dashboard-content">
+            <h2 class="dashboard-title">📥 ADD NEW ITEM</h2>
+            <div class="inventory-form">
+                <div class="form-group">
+                    <label class="form-label" for="itemName">Name of Item</label>
+                    <input type="text" id="itemName" class="form-input" placeholder="e.g., Lucky Me Pancit Canton">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="itemCategory">Category</label>
+                    <select id="itemCategory" class="category-select">
+                        <option value="Food">Food</option>
+                        <option value="Drinks">Drinks</option>
+                        <option value="Household">Household Items</option>
+                        <option value="Personal">Personal Care</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="itemPrice">Price (₱)</label>
+                    <input type="number" id="itemPrice" class="form-input" placeholder="e.g., 10.00" step="0.01">
+                </div>
+
+                <button class="btn btn-primary" onclick="saveItem()">💾 SAVE ITEM</button>
+                <div class="save-status" id="saveStatus">✅ Item saved successfully!</div>
+            </div>
+        </div>
+
+        <!-- SEARCH SECTION -->
+        <div class="search-section">
+            <h2 class="dashboard-title">🔍 SEARCH ITEMS</h2>
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by name or category...">
+                <button class="search-btn" onclick="searchItems()"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+
+        <!-- HISTORY SECTION -->
+        <div class="history-section">
+            <h2 class="dashboard-title">📜 INVENTORY HISTORY</h2>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <<<th>DATE & TIME</</</th>
+                        <<<th>ITEM NAME</</</th>
+                        <<<th>CATEGORY</</</th>
+                        <<<th>PRICE (₱)</</</th>
+                        <<<th>ACTIONS</</</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <!-- History items will be added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- DATA TOOLS SECTION -->
+        <div class="data-tools">
+            <h2 class="dashboard-title">🔄 DATA MANAGEMENT</h2>
+            <button class="btn btn-primary" onclick="exportInventory()">📤 EXPORT ALL DATA</button>
+            <button class="btn btn-secondary import-btn">
+                📥 IMPORT DATA
+                <input type="file" id="importFile" accept=".json" onchange="importInventory(event)">
+            </button>
+            <button class="btn btn-secondary" onclick="copyAllData()">📋 COPY ALL DATA</button>
+            <button class="btn btn-secondary" onclick="logoutUser()">🔒 LOGOUT</button>
+        </div>
+    </div>
+
+    <!-- EDIT ITEM MODAL -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <h3 class="modal-title">✏️ EDIT ITEM DETAILS</h3>
+            <input type="hidden" id="editItemId">
+            
+            <div class="form-group">
+                <label class="form-label" for="editItemName">Item Name</label>
+                <input type="text" id="editItemName" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="editItemCategory">Category</label>
+                <select id="editItemCategory" class="category-select">
+                    <option value="Food">Food</option>
+                    <option value="Drinks">Drinks</option>
+                    <option value="Household">Household Items</option>
+                    <option value="Personal">Personal Care</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="editItemPrice">New Price (₱)</label>
+                <input type="number" id="editItemPrice" class="form-input" step="0.01">
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeEditModal()">❌ CANCEL</button>
+                <button class="btn btn-primary" onclick="updateItem()">✅ SAVE CHANGES</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="app-footer">
+        <p>Powered By: Patrick Ongog</p>
+    </div>
+
+    <script>
+        // ================= GLOBAL VARIABLES =================
+        let currentUser = null;
+        let inventoryData = JSON.parse(localStorage.getItem('analynSariSariInventory')) || [];
+        let userAccounts = JSON.parse(localStorage.getItem('analynSariSariUsers')) || [];
+        let currentEditId = null;
+
+        // ================= PAGE NAVIGATION =================
+        function switchPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.classList.remove('active-page');
+            });
+            // Show selected page
+            document.getElementById(pageId).classList.add('active-page');
+            // Hide all alerts
+            hideAllAlerts();
+        }
+
+        function hideAllAlerts() {
+            document.getElementById('createErrorAlert').style.display = 'none';
+            document.getElementById('createSuccessAlert').style.display = 'none';
+            document.getElementById('loginErrorAlert').style.display = 'none';
+        }
+
+        // Initialize with login page
+        window.onload = function() {
+            switchPage('loginPage');
+            loadInventoryHistory();
+        }
+
+        // ================= ACCOUNT MANAGEMENT =================
+        function createAccount() {
+            const name = document.getElementById('newName').value.trim();
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate inputs
+            if (!name || !username || !password || password !== confirmPassword) {
+                document.getElementById('createErrorAlert').style.display = 'block';
+                return;
+            }
+
+            // Check if username exists
+            const userExists = userAccounts.some(user => user.username === username);
+            if (userExists) {
+                document.getElementById('createErrorAlert').textContent = '❌ Username already exists!';
+                document.getElementById('createErrorAlert').style.display = 'block';
+                return;
+            }
+
+            // Save new account
+            const newUser = {
+                name: name,
+                username: username,
+                password: password
+            };
+            userAccounts.push(newUser);
+            localStorage.setItem('analynSariSariUsers', JSON.stringify(userAccounts));
+
+            // Show success message and switch to login page
+            document.getElementById('createSuccessAlert').style.display = 'block';
+            setTimeout(() => {
+                switchPage('loginPage');
+                clearCreateForm();
+            }, 2000);
+        }
+
+        function clearCreateForm() {
+            document.getElementById('newName').value = '';
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+
+        function loginUser() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            // Find user
+            const user = userAccounts.find(u => u.username === username && u.password === password);
+            if (!user) {
+                document.getElementById('loginErrorAlert').style.display = 'block';
+                return;
+            }
+
+            // Set current user and switch to dashboard
+            currentUser = user;
+            switchPage('dashboardPage');
+            clearLoginForm();
+            loadInventoryHistory();
+        }
+
+        function clearLoginForm() {
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            switchPage('loginPage');
+        }
+
+        // ================= INVENTORY MANAGEMENT =================
+        function saveItem() {
+            const itemName = document.getElementById('itemName').value.trim();
+            const itemCategory = document.getElementById('itemCategory').value;
+            const itemPrice = parseFloat(document.getElementById('itemPrice').value);
+
+            // Validate inputs
+            if (!itemName || isNaN(itemPrice) || itemPrice <= 0) {
+                alert('⚠️ Please fill all fields correctly!');
+                return;
+            }
+
+            // Create new item
+            const newItem = {
+                id: Date.now(),
+                name: itemName,
+                category: itemCategory,
+                price: itemPrice.toFixed(2),
+                timestamp: new Date().toLocaleString('tl-PH'),
+                lastUpdated: ''
+            };
+
+            // Save to inventory
+            inventoryData.push(newItem);
+            localStorage.setItem('analynSariSariInventory', JSON.stringify(inventoryData));
+
+            // Show success message and reset form
+            document.getElementById('saveStatus').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('saveStatus').style.display = 'none';
+            }, 2000);
+            clearItemForm();
+            loadInventoryHistory();
+        }
+
+        function clearItemForm() {
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemCategory').value = 'Food';
+            document.getElementById('itemPrice').value = '';
+        }
+
+        function loadInventoryHistory(filteredItems = null) {
+            const tableBody = document.getElementById('historyTableBody');
+            tableBody.innerHTML = '';
+
+            const itemsToDisplay = filteredItems || inventoryData;
+
+            if (itemsToDisplay.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">No items in inventory yet</td></tr>';
+                return;
+            }
+
+            // Sort items by date (newest first)
+            const sortedItems = [...itemsToDisplay].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            // Populate table
+            sortedItems.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.timestamp}${item.lastUpdated ? '<br><small style="color:#888;">Updated: ' + item.lastUpdated + '</small>' : ''}</td>
+                    <td>${item.name}</td>
+                    <td>${item.category}</td>
+                    <td>${parseFloat(item.price).toLocaleString('tl-PH', { style: 'currency', currency: 'PHP' })}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-small btn-edit" onclick="openEditModal(${item.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-small btn-delete" onclick="deleteItem(${item.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function searchItems() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!query) {
+                loadInventoryHistory();
+                return;
+            }
+
+            const filtered = inventoryData.filter(item => 
+                item.name.toLowerCase().includes(query) || 
+                item.category.toLowerCase().includes(query)
+            );
+            loadInventoryHistory(filtered);
+        }
+
+        // ================= EDIT/DELETE FUNCTIONS =================
+        function openEditModal(itemId) {
+            // Find the item to edit
+            const item = inventoryData.find(i => i.id === itemId);
+            if (!item) return;
+
+            // Populate modal fields
+            document.getElementById('editItemId').value = item.id;
+            document.getElementById('editItemName').value = item.name;
+            document.getElementById('editItemCategory').value = item.category;
+            document.getElementById('editItemPrice').value = item.price;
+
+            // Show modal
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function updateItem() {
+            const itemId = parseInt(document.getElementById('editItemId').value);
+            const newName = document.getElementById('editItemName').value.trim();
+            const newCategory = document.getElementById('editItemCategory').value;
+            const newPrice = parseFloat(document.getElementById('editItemPrice').value);
+
+            // Validate inputs
+            if (!newName || isNaN(newPrice) || newPrice <= 0) {
+                alert('⚠️ Please fill all fields correctly!');
+                return;
+            }
+
+            // Find and update the item
+            const itemIndex = inventoryData.findIndex(i => i.id === itemId);
+            if (itemIndex === -1) return;
+
+            inventoryData[itemIndex] = {
+                ...inventoryData[itemIndex],
+                name: newName,
+                category: newCategory,
+                price: newPrice.toFixed(2),
+                lastUpdated: new Date().toLocaleString('tl-PH')
+            };
+
+            // Save changes
+            localStorage.setItem('analynSariSariInventory', JSON.stringify(inventoryData));
+            
+            // Update UI
+            closeEditModal();
+            loadInventoryHistory();
+            alert('✅ Item updated successfully!');
+        }
+
+        function deleteItem(itemId) {
+            if (!confirm('⚠️ Are you sure you want to delete this item? This action cannot be undone.')) {
+                return;
+            }
+
+            // Remove item from inventory
+            inventoryData = inventoryData.filter(i => i.id !== itemId);
+            localStorage.setItem('analynSariSariInventory', JSON.stringify(inventoryData));
+            
+            // Update UI
+            loadInventoryHistory();
+            alert('✅ Item deleted successfully!');
+        }
+
+        // ================= DATA EXPORT/IMPORT =================
+        function exportInventory() {
+            if (inventoryData.length === 0) {
+                alert('⚠️ No inventory data to export!');
+                return;
+            }
+
+            const dataStr = JSON.stringify(inventoryData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+                        a.download = `Analyn_SariSari_Inventory_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importInventory(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (!Array.isArray(importedData)) {
+                        alert('❌ Invalid file format! Please use a valid inventory JSON file.');
+                        return;
+                    }
+
+                    // Validate imported items
+                    const validItems = importedData.filter(item => 
+                        item.id && item.name && item.category && item.price && item.timestamp
+                    );
+
+                    if (validItems.length === 0) {
+                        alert('❌ No valid items found in the imported file.');
+                        return;
+                    }
+
+                    // Merge or replace data (ask user)
+                    const replace = confirm('📥 Do you want to REPLACE existing inventory (OK) or MERGE with current data (Cancel)?');
+                    if (replace) {
+                        inventoryData = validItems;
+                    } else {
+                        // Avoid duplicate IDs
+                        const existingIds = new Set(inventoryData.map(item => item.id));
+                        const newItems = validItems.filter(item => !existingIds.has(item.id));
+                        inventoryData = [...inventoryData, ...newItems];
+                    }
+
+                    localStorage.setItem('analynSariSariInventory', JSON.stringify(inventoryData));
+                    loadInventoryHistory();
+                    alert(`✅ Successfully imported ${validItems.length} items!`);
+                } catch (err) {
+                    alert('❌ Failed to import data! Please check if the file is a valid JSON.');
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function copyAllData() {
+            const dataStr = JSON.stringify(inventoryData, null, 2);
+            navigator.clipboard.writeText(dataStr).then(() => {
+                alert('📋 All inventory data copied to clipboard!');
+            }).catch(err => {
+                alert('❌ Failed to copy data. Please try manually selecting and copying the text below.');
+                // Create temporary textarea for manual copy
+                const tempText = document.createElement('textarea');
+                tempText.style.position = 'fixed';
+                tempText.style.top = '-100px';
+                tempText.value = dataStr;
+                document.body.appendChild(tempText);
+                tempText.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempText);
+            });
+        }
+
+        // ================= KEYBOARD SHORTCUTS =================
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+S to save current form
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                if (document.getElementById('dashboardPage').classList.contains('active-page')) {
+                    saveItem();
+                }
+            }
+            // Ctrl+E to open edit modal
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                const firstItem = document.querySelector('.history-table tr:not(:first-child)');
+                if (firstItem) {
+                    const itemId = firstItem.dataset.id;
+                    openEditModal(parseInt(itemId));
+                }
+            }
+        });
+
+        // ================= WINDOW RESIZE HANDLER =================
+        window.addEventListener('resize', function() {
+            // Adjust table layout on mobile resize
+            const table = document.querySelector('.history-table');
+            if (window.innerWidth < 400) {
+                table.style.fontSize = '0.8rem';
+            } else {
+                table.style.fontSize = '0.95rem';
+            }
+        });
+    </script>
+</body>
+</html>
